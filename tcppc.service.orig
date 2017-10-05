@@ -1,0 +1,14 @@
+# SYSTEMD unit file.
+
+[Unit]
+Description=TCP payload capture
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/tcppc # change here
+ExecStart=/opt/tcppc/tcppc -L tcppc.log     # change here
+ExecStop=/bin/kill ${MAINPID}
+
+[Install]
+WantedBy=multi-user.target
