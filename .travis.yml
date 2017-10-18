@@ -1,1 +1,10 @@
 language: go
+deploy:
+  provider: releases
+  api_key:
+    secure: awGDh6SRsZkJheMfKESAwCuCZInaOY9Gm0ynsOVFAeDHno4gL/361jQ7OdT92t7yF2253N1XFv7zJp6HEvOFaHGXlfmAzpvaFcLWBhKyTynozsSoIk33k1Ib3JYEbOr4ue6JBa8VTl+JrWITFmEhdzqdOin6fdfxek+zo7fcmLQxKmItMxF+8f9bbfFvcZzThUANydG3228lwE07g48R+Admm5edQJluABufgWj1axg//ctYjpPsrppErbFil7UPZkBVqQzKbLInfvDtfKbS/AGbtUgsx2iMSvIks6Cpos7GPAuHn1bFuL/wAdkIClRidEsFhldO/+uwe4OuV4MuMJvnRnQmQmW+Ui0zV2o1uVIN5SbB6TD3Mg3+jEoZprK1KWpS3TeQ8cgWrZWbvfqrebkwA1+VLLn0L7bnQzRUNEC6uy6zhobzA5XgqeUmcy0YhCdBDeh7IYsKFxQjffAFqMriKIWNzA3pooWw+gQtfg8wP1AaXMl8fSRe500GulQk/iMZS80Ggm+aWfnybLTAI5VZIkMwreTQamN49uMj+S+K+L9La0Nl/fnz/u4U17rs23NJnDJac5wOXYdJBwXf19D+Lrv2wkBqwURwyf6PpZcK7IpwjTJu/gl7l+RhhmIWFb5r15BNmvTTrII/HaVG+BizRc45iBHSakweaPhYw0s=
+  file: tcppc-go
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: md-irohas/tcppc-go
