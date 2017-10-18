@@ -10,7 +10,7 @@ import (
 
 const (
 	// Version number
-	version = "0.1.0"
+	version = "0.1.1"
 )
 
 func handleRequest(conn net.Conn) {
