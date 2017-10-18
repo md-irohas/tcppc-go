@@ -64,7 +64,7 @@ Note: The log file is not intended to be used for analysis.
 It is just for the check of the program.
 If you want to analyze packets, you should capture the packets by capturing
 utilities such as `tcpdump` and `tshark` (I also wrote a packet-capturing
-utility named `rcap-go` ([link](https://github.com/md-irohas/rcap-gp)) for the
+utility named `rcap-go` ([link](https://github.com/md-irohas/rcap-go)) for the
 purpose).
 
 
