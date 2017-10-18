@@ -1,4 +1,6 @@
 language: go
+install:
+  - go build -v
 deploy:
   provider: releases
   api_key:
