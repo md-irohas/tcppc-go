@@ -81,6 +81,11 @@ $ iptables -t nat -A PREROUTING -i <interface> -p tcp -d <listen-ip> -j DNAT --t
 ```
 
 
+## Alternatives
+
+You can use `nc` or `socat` instead.
+
+
 ## License
 
 MIT License ([link](https://opensource.org/licenses/MIT)).
