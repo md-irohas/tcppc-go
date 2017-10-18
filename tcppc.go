@@ -81,8 +81,7 @@ func main() {
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			log.Println("Failed to accept:", err.Error())
-			continue
+			log.Fatal("Failed to accept:", err.Error())
 		}
 
 		go handleRequest(conn)
