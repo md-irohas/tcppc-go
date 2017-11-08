@@ -75,15 +75,20 @@ purpose).
 
 ### Listen on all ports?
 
-Redirect all packets to the listening port by `iptables`.
+The easiest way to listen on all ports is to redirect all packets to the
+listening port by packet forwarding tools such as `iptables`.
 
-If you want to redirect all packets, you should prepare a new network interface
-and an IP address to capture the whole traffic.
+In this case, you should prepare a new (pseudo) network interface and an IP
+address (i.e. IP alias) to monitor and capture all the traffic.
 
 ```
 # !!! DANGER !!!
 $ iptables -t nat -A PREROUTING -i <interface> -p tcp -d <listen-ip> -j DNAT --to-destination <listen-ip>:<listen-port>
 ```
+
+Note that if you redirect all the traffic, you cannot verify destination port
+numbers from logs of `tcppc` (Therefore, you should use a packet capture
+utility for logging.)
 
 
 ## Alternatives
