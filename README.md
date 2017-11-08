@@ -4,16 +4,16 @@ This is a simple program to capture TCP payloads. This program listens on the
 given IP address and the given port, establishes connections from external
 hosts, and continues to receive packets until the connections are closed.
 
-I wrote this program to use as a honeypot for monitoring the payload of the
-arbitrary ports. This may be "Re-inventing the wheel."
-If you know better utilities, please let me know.
+I wrote this program to use as a honeypot for monitoring payloads of arbitrary
+ports. This may be "Re-inventing the wheel." If you know better utilities,
+please let me know.
 
 
 ## Installation
 
 ### Precompiled binary
 
-A precompiled binary for Linux is released. See release page.
+Precompiled binaries for Linux (x86_64) is released. See release page.
 
 
 ### Compile from source
@@ -55,12 +55,17 @@ Usage of ./tcppc:
     	hostname to listen on.
   -L string
     	log file.
+  -R uint
+    	set maximum number of file descriptors (need root priviledge in some environments).
   -p uint
     	port number to listen on. (default 12345)
+  -t int
+    	timeout for TCP connection. (default 60)
   -v	show version and exit.
 ```
 
-Note: The log file is not intended to be used for analysis.
+Note:
+The log file is not intended to be used for analysis.
 It is just for the check of the program.
 If you want to analyze packets, you should capture the packets by capturing
 utilities such as `tcpdump` and `tshark` (I also wrote a packet-capturing

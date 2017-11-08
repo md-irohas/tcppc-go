@@ -97,9 +97,9 @@ func main() {
 	}
 
 	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
-    if err == nil {
+	if err == nil {
 		log.Println("Maximum number of file descriptors:", rLimit.Cur)
-    }
+	}
 
 	l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
@@ -112,6 +112,7 @@ func main() {
 	for {
 		conn, err := l.Accept()
 		if err != nil {
+			// This is a serious problem. Abort this program.
 			log.Fatal("Failed to accept:", err.Error())
 		}
 
