@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/md-irohas/tcppc-go/tcppc"
+	"github.com/pelletier/go-toml"
 	"log"
 	"net"
 	"os"
@@ -29,6 +30,7 @@ func main() {
 	var maxFdNum uint64
 	var x509Cert string
 	var x509Key string
+	var cnfFileName string
 	var showVersion bool
 
 	// Parse params from command-line arguments.
@@ -43,12 +45,34 @@ func main() {
 	flag.Uint64Var(&maxFdNum, "R", 0, "set maximum number of file descriptors (need root priviledge in some environments).")
 	flag.StringVar(&x509Cert, "C", "", "TLS certificate file.")
 	flag.StringVar(&x509Key, "K", "", "TLS key file.")
+	flag.StringVar(&cnfFileName, "c", "", "configuration file.")
 	flag.BoolVar(&showVersion, "v", false, "show version and exit.")
 	flag.Parse()
 
 	if showVersion {
 		fmt.Println("version:", version)
 		return
+	}
+
+	// Parse params from config file. Params in the command-line arguments are
+	// ignored.
+	if cnfFileName != "" {
+		cnf, err := toml.LoadFile(cnfFileName)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		host = cnf.Get("tcppc.host").(string)
+		port = uint(cnf.Get("tcppc.port").(int64))
+		timeout = int(cnf.Get("tcppc.timeout").(int64))
+		tcpFileNameFmt = cnf.Get("tcppc.tcpFileFmt").(string)
+		rotInt = cnf.Get("tcppc.rotInt").(int64)
+		rotOffset = cnf.Get("tcppc.rotOffset").(int64)
+		logFileName = cnf.Get("tcppc.logFile").(string)
+		timezone = cnf.Get("tcppc.timezone").(string)
+		maxFdNum = uint64(cnf.Get("tcppc.maxFdNum").(int64))
+		x509Cert = cnf.Get("tcppc.x509Cert").(string)
+		x509Key = cnf.Get("tcppc.x509Key").(string)
 	}
 
 	log.SetFlags(log.LstdFlags)

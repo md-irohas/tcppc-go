@@ -1,0 +1,42 @@
+[tcppc]
+
+# hostname to listen on (e.g. 0.0.0.0).
+host = "0.0.0.0"
+
+# port number to listen on (e.g. 12345).
+port = 12345
+
+# timeout of TCP session in second.
+timeout = 60
+
+# filename format of TCP session data.
+# format of date and time (e.g. %Y, %m ...) will be converted (see man
+# strftime)
+tcpFileFmt = "data/tcppc-%Y%m%d.jsonl"
+
+# rotation interval in second.
+# session file will be rotated every `rotInt` seconds. if `rotInt` is zero,
+# the file won't be rotated forever.
+rotInt = 60
+
+# rotation interval offset in second.
+rotOffset = 0
+
+# [deprecated] log file for TCPPC program.
+logFile = ""
+
+# timezone for 'tcpFileFmt'.
+# see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone = "Local"
+
+# max number of file descriptors.
+maxFdNum = 8192
+
+# the following x509Cert and x509key are set, TCPPC will work as TLS
+# handshaker. If none of them are set, TCPPC will work as TCP handshaker.
+
+# TLS certificate file.
+x509Cert = ""
+
+# TLS key file.
+x509Key = ""
