@@ -1,5 +1,6 @@
 language: go
 install:
+  - go get -v -d
   - go build -v
 deploy:
   provider: releases
