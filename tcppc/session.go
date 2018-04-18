@@ -1,8 +1,8 @@
 package tcppc
 
 import (
-	"github.com/jehiah/go-strftime"
 	"fmt"
+	"github.com/jehiah/go-strftime"
 	"net"
 	"time"
 )

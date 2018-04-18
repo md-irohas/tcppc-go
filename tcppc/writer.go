@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"time"
 	"sync"
+	"time"
 )
 
 func fileExists(filename string) bool {
@@ -38,7 +38,7 @@ type RotWriter struct {
 }
 
 func NewWriter(fileNameFmt string, rotInt, rotOffset int64, loc *time.Location) *RotWriter {
-	w := &RotWriter{FileNameFmt: fileNameFmt, RotInt: rotInt, RotOffset: rotOffset, Location: loc, file: nil, lstRotTime: 0, closed: false,}
+	w := &RotWriter{FileNameFmt: fileNameFmt, RotInt: rotInt, RotOffset: rotOffset, Location: loc, file: nil, lstRotTime: 0, closed: false}
 
 	go func() {
 		for {
