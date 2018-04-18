@@ -1,15 +1,15 @@
-# tcpPC
+# tcppc
 
-`tcpPC` is a simple program to capture TCP payloads.  This program listens
+`tcppc` is a simple program to capture TCP payloads.  This program listens
 on the given IP address and the given port, establishes connections from
 external hosts, and continues to receive packets until the connections are
 closed or timeouted.  This program supports not only TCP handshake but also
-TLS(SSL) handshake.  Using `tcpPC`, you can get payloads of arbitrary ports.
+TLS(SSL) handshake.  Using `tcppc`, you can get payloads of arbitrary ports.
 I am developing this program to use as a honeypot for monitoring payloads of
 arbitrary ports.
 
 
-The followings are the main functions of `tcpPC`
+The followings are the main functions of `tcppc`
 
 * Establish TCP & SSL handshake and continue to receive packets.
 * Save received data (session data) as JSON lines format.
@@ -24,7 +24,7 @@ Precompiled binaries for Linux (x86_64) is released. See release page.
 
 ### Compile from source
 
-`tcpPC` is written in Go. So, if you want to build its binary, you need to
+`tcppc` is written in Go. So, if you want to build its binary, you need to
 prepare the development environment for Go.
 
 If you have got ready for building Go, type the following commands.
@@ -49,7 +49,7 @@ $ cp -v tcppc-go /usr/local/bin/tcppc
 
 ## Usage
 
-The followings are the options of `tcpPC`. You can also use configuration
+The followings are the options of `tcppc`. You can also use configuration
 files instead of using these options (See 'Configuration' section).
 
 ```
@@ -82,7 +82,7 @@ Usage of ./tcppc-go:
 ```
 
 
-I will show you three basic usages of `tcpPC`.
+I will show you three basic usages of `tcppc`.
 
 
 ### Example-1: Basics
@@ -124,9 +124,10 @@ You can save session data to files as [JSON lines](http://jsonlines.org/) format
 
 When `-w` option is specified, the data will be written to the given file.
 You can use datetime format in `-w` option (See `man strftime` for more
-details).
+details). When `-T` option is specified, data files will be rotated every
+given seconds.
 
-When `-T` option is specified, data files will be rotated every given seconds.
+Run tcppc-go program.
 
 ```sh
 $ ./tcppc-go -T 86400 -w log/tcppc-%Y%m%d.jsonl
@@ -166,11 +167,13 @@ $ jq . log/tcppc-20180418.jsonl
 
 ### Example-3: TLS handshaker
 
-`tcpPC` supports not only TCP handshake but also TLS handshake.
+`tcppc` supports not only TCP handshake but also TLS handshake.
 
-When both `-C` and `-K` options are specified, this program works as TLS handshaker.
-You need to prepare for TLS certificate (in many cases, self-signed) and key
-files (See 'Configuration' section).
+When both `-C` and `-K` options are specified, this program works as TLS
+handshaker. You need to prepare for TLS certificate (in many cases,
+self-signed) and key files (See 'Configuration' section).
+
+Run tcppc-go program.
 
 ```sh
 $ ./tcppc-go -T 86400 -C server.crt -K server.key -w log/tcppc-%Y%m%d.jsonl
@@ -232,7 +235,7 @@ $ vim /etc/tcppc.toml
 
 ### TLS certificate/key files
 
-If you want to use `tcpPC` as TLS handshaker, you need to prepare TLS
+If you want to use `tcppc` as TLS handshaker, you need to prepare TLS
 certificate file and TLS key file.
 
 You can create these files by the following commands.
@@ -250,7 +253,7 @@ self-signed certificate file.
 ### Systemd
 
 A simple unit file of systemd is ready (`tcppc.service.orig`)
-Edit it and enable/start `tcpPC` service.
+Edit it and enable/start `tcppc` service.
 
 ```sh
 # copy this file to systemd's directory.
@@ -285,7 +288,7 @@ $ iptables -t nat -A PREROUTING -i <interface> -p tcp -d <listen-ip> -j DNAT --t
 
 Although the destination address and port are converted by NAT, recent linux
 provides an `ORIGINAL_DST` function to lookup the original destination
-address and port. Therefore, `tcpPC` can record original destination address
+address and port. Therefore, `tcppc` can record original destination address
 and port in linux environment.
 
 
