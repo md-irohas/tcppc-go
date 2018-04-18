@@ -9,13 +9,14 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/signal"
 	"syscall"
 	"time"
 )
 
 const (
 	// Version number
-	version = "0.2.0"
+	version = "0.2.1"
 )
 
 func main() {
@@ -32,6 +33,9 @@ func main() {
 	var x509Key string
 	var cnfFileName string
 	var showVersion bool
+
+	var listener net.Listener
+	var writer *tcppc.RotWriter
 
 	// Parse params from command-line arguments.
 	flag.StringVar(&host, "H", "0.0.0.0", "hostname to listen on.")
@@ -123,12 +127,24 @@ func main() {
 
 	log.Printf("Timezone: %s\n", timezone)
 
+	// Init signal handling.
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		s := <-sigc
+
+		log.Printf("SIGNAL: %s\n", s)
+		if writer != nil {
+			writer.Close()
+		}
+		os.Exit(0)
+	}()
+
 	// Prepare for TCP/TLL handshake listener.  When both TLS certificate file
 	// and TLS key file are given, start listening as TLS handshaker. When none
 	// of them are given, start listening as TCP handshaker. Otherwise, failed
 	// to start listening.
-
-	var listener net.Listener
 
 	if x509Cert != "" && x509Key != "" {
 		log.Printf("Server Mode: TLS handshaker.\n")
@@ -166,7 +182,6 @@ func main() {
 
 	defer listener.Close()
 
-	var writer *tcppc.RotWriter
 	if tcpFileNameFmt != "" {
 		log.Printf("TCP session data: %s (Rotate every %d seconds w/ %d seconds offset)", tcpFileNameFmt, rotInt, rotOffset)
 		writer = tcppc.NewWriter(tcpFileNameFmt, rotInt, rotOffset, loc)
