@@ -38,7 +38,7 @@ func main() {
 	flag.UintVar(&port, "p", 12345, "port number to listen on.")
 	flag.IntVar(&timeout, "t", 60, "timeout for TCP connection.")
 	flag.StringVar(&tcpFileNameFmt, "w", "", "tcp session file (JSON lines format).")
-	flag.Int64Var(&rotInt, "T", 86400, "rotation interval [sec].")
+	flag.Int64Var(&rotInt, "T", 0, "rotation interval [sec].")
 	flag.Int64Var(&rotOffset, "offset", 0, "rotation interval offset [sec].")
 	flag.StringVar(&logFileName, "L", "", "[deprecated] log file.")
 	flag.StringVar(&timezone, "z", "Local", "timezone used for tcp session file.")
