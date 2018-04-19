@@ -1,5 +1,7 @@
 # tcppc
 
+*NOTE: ORIGINAL_DST function in TLS handshaker does not work now.* 
+
 `tcppc` is a simple program to capture TCP payloads.  This program listens
 on the given IP address and the given port, establishes connections from
 external hosts, and continues to receive packets until the connections are
