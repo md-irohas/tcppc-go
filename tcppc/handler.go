@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
+	"os"
 	"net"
 	"runtime"
 	"sync"
 	"syscall"
+	"github.com/md-irohas/tcppc-go/crypto/tls"
 )
 
 const (
@@ -45,17 +47,29 @@ func (c *SessionCounter) count() uint {
 	return c.Count
 }
 
-func getOriginalDst(conn *net.TCPConn) (*net.TCPAddr, error) {
+func getOriginalDst(conn net.Conn) (*net.TCPAddr, error) {
 	if runtime.GOOS != "linux" {
 		return nil, errors.New("'getOriginalDst' is only supported in Linux.")
 	}
 
-	connFile, err := conn.File()
-	if err != nil {
-		return nil, err
+	var file *os.File
+	var err error
+
+	if _, ok := conn.(*net.TCPConn); ok {
+		file, err = conn.(*net.TCPConn).File()
+		if err != nil {
+			return nil, err
+		}
+	} else if _, ok := conn.(*tls.Conn); ok {
+		file, err = conn.(*tls.Conn).File()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, errors.New("Unknown Conn instance.")
 	}
 
-	origDstRaw, err := syscall.GetsockoptIPv6Mreq(int(connFile.Fd()), syscall.IPPROTO_IP, SO_ORIGINAL_DST)
+	origDstRaw, err := syscall.GetsockoptIPv6Mreq(int(file.Fd()), syscall.IPPROTO_IP, SO_ORIGINAL_DST)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +95,7 @@ func HandleRequest(conn net.Conn, writer *RotWriter) {
 	src = conn.RemoteAddr().(*net.TCPAddr)
 
 	if runtime.GOOS == "linux" {
-		dst, err = getOriginalDst(conn.(*net.TCPConn))
+		dst, err = getOriginalDst(conn)
 		if err != nil {
 			log.Printf("Failed to get original dst: %s", err)
 		}

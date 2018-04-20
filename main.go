@@ -1,10 +1,10 @@
 package main
 
 import (
-	"crypto/tls"
 	"flag"
 	"fmt"
 	"github.com/md-irohas/tcppc-go/tcppc"
+	"github.com/md-irohas/tcppc-go/crypto/tls"
 	"github.com/pelletier/go-toml"
 	"log"
 	"net"
@@ -18,6 +18,7 @@ const (
 	// Version number
 	version = "0.2.1"
 )
+
 
 func main() {
 	var host string
