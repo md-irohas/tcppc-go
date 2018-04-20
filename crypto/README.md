@@ -1,15 +1,16 @@
+# About crypto package
+
 Files in crypto directory are copied or modifed version of the original
-golang repository. See LICENSE file for more details.
+golang repository (https://github.com/golang/go). See LICENSE file for the
+copyright of these files.
 
 
-Original Repository:
-  https://github.com/golang/go
-
+## diff
 
 Differences between original source codes and modified source codes are as
 follows:
 
-crypto/cipher_suites.go
+### crypto/cipher_suites.go
 
 ```
 18,19c18
@@ -19,7 +20,7 @@ crypto/cipher_suites.go
 > 	"golang_org/x/crypto/chacha20poly1305"
 ```
 
-crypto/common.go
+### crypto/common.go
 
 ```
 10c10
@@ -32,7 +33,7 @@ crypto/common.go
 < 	"github.com/md-irohas/tcppc-go/crypto/internal/cipherhw"
 ```
 
-conn.go
+### conn.go
 
 ```
 17d16
@@ -53,7 +54,7 @@ conn.go
 < }
 ```
 
-key_agreement.go
+### key_agreement.go
 
 ```
 20,21c20
@@ -62,3 +63,4 @@ key_agreement.go
 ---
 > 	"golang_org/x/crypto/curve25519"
 ```
+

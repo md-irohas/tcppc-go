@@ -1,14 +1,12 @@
 # tcppc
 
-*NOTE: ORIGINAL_DST function in TLS handshaker does not work now.* 
-
-`tcppc` is a simple program to capture TCP payloads.  This program listens
-on the given IP address and the given port, establishes connections from
-external hosts, and continues to receive packets until the connections are
-closed or timeouted.  This program supports not only TCP handshake but also
-TLS(SSL) handshake.  Using `tcppc`, you can get payloads of arbitrary ports.
-I am developing this program to use as a honeypot for monitoring payloads of
-arbitrary ports.
+`tcppc` is a simple honeypot program to capture TCP payloads. This program
+listens on the given IP address and the given port, establishes connections
+from external hosts, and continues to receive packets until the connections
+are closed or timeouted. This program supports not only TCP handshake but
+also TLS(SSL) handshake. Using `tcppc`, you can get payloads of arbitrary
+ports. I am developing this program to use as a honeypot for monitoring
+payloads.
 
 
 The followings are the main functions of `tcppc`
