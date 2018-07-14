@@ -1,17 +1,15 @@
 # tcppc
 
-`tcppc` is a simple honeypot program to capture TCP payloads. This program
+`tcppc` is a simple honeypot program to capture TCP/TLS payloads.  This program
 listens on the given IP address and the given port, establishes connections
-from external hosts, and continues to receive packets until the connections
-are closed or timeouted. This program supports not only TCP handshake but
-also TLS(SSL) handshake. Using `tcppc`, you can get payloads of arbitrary
-ports. I am developing this program to use as a honeypot for monitoring
-payloads.
+from external hosts, and continues to receive packets until the connections are
+closed or timeouted. Using `tcppc`, you can get payloads of arbitrary ports. I
+am developing this program to use as a honeypot for monitoring payloads.
 
 
-The followings are the main functions of `tcppc`
+Main functions:
 
-* Establish TCP & SSL handshake and continue to receive packets.
+* Establish TCP & TLS handshake and continue to receive packets.
 * Save received data (session data) as JSON lines format.
 * Rotate the data files in the given interval.
 
@@ -20,37 +18,26 @@ The followings are the main functions of `tcppc`
 
 ### Precompiled binary
 
-Precompiled binaries for Linux (x86_64) is released. See release page.
+Precompiled binaries for Linux (x86_64) are released.
+See [release](https://github.com/md-irohas/tcppc-go/releases) page.
 
 ### Compile from source
 
 `tcppc` is written in Go. So, if you want to build its binary, you need to
 prepare the development environment for Go.
 
-If you have got ready for building Go, type the following commands.
+If you are ready for building Go, type the following commands.
 
 ```sh
-$ git clone https://github.com/md-irohas/tcppc-go
-
-$ cd path/to/tcppc-go
-
-$ go get
-$ go build
-```
-
-### Move the binary
-
-Move the binary to `/usr/local/bin`.
-
-```
-$ cp -v tcppc-go /usr/local/bin/tcppc
+$ go get github.com/md-irohas/tcppc-go
 ```
 
 
 ## Usage
 
-The followings are the options of `tcppc`. You can also use configuration
-files instead of using these options (See 'Configuration' section).
+The followings are the options of `tcppc`.
+You can also use configuration files instead of using these options (See
+'Configuration' section).
 
 ```
 Usage of ./tcppc-go:
@@ -80,9 +67,6 @@ Usage of ./tcppc-go:
   -z string
     	timezone used for tcp session file. (default "Local")
 ```
-
-
-I will show you three basic usages of `tcppc`.
 
 
 ### Example-1: Basics
@@ -232,7 +216,6 @@ $ vim /etc/tcppc.toml
 ... (edit) ...
 ```
 
-
 ### TLS certificate/key files
 
 If you want to use `tcppc` as TLS handshaker, you need to prepare TLS
@@ -248,7 +231,6 @@ $ openssl x509 -days 36500 -req -signkey server.key < server.csr > server.crt
 
 Note that these commands create not a valid certificate file but a
 self-signed certificate file.
-
 
 ### Systemd
 
@@ -272,7 +254,6 @@ systemctl start tcppc
 systemctl enable tcppc
 ```
 
-
 ### Listen on all ports
 
 The easiest way to listen on all ports is to redirect all packets to the
@@ -287,9 +268,9 @@ $ iptables -t nat -A PREROUTING -i <interface> -p tcp -d <listen-ip> -j DNAT --t
 ```
 
 Although the destination address and port are converted by NAT, recent linux
-provides an `ORIGINAL_DST` function to lookup the original destination
-address and port. Therefore, `tcppc` can record original destination address
-and port in linux environment.
+provides an `ORIGINAL_DST` function to lookup the original destination address
+and port. Therefore, `tcppc` can record original destination address and port
+in linux environment.
 
 
 ## Session data format
@@ -333,6 +314,14 @@ The following shows the data example with some comments.
   ]
 }
 ```
+
+## Limitations
+
+### UDP support
+
+The current implementation does not support UDP for session data because the
+ORIGINAL_DST function does not seem to work in UDP. The easiest way to monitor
+UDP traffic is to parse UDP packets from PCAP files.
 
 
 ## Alternatives
