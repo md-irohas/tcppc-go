@@ -16,6 +16,7 @@ func formatTimeStr(t *time.Time) string {
 }
 
 type TCPFlow struct {
+	Proto string `json:"proto"`
 	Src   net.IP `json:"src"`
 	Sport int    `json:"sport"`
 	Dst   net.IP `json:"dst"`
@@ -23,7 +24,7 @@ type TCPFlow struct {
 }
 
 func NewTCPFlow(src, dst *net.TCPAddr) *TCPFlow {
-	return &TCPFlow{src.IP, src.Port, dst.IP, dst.Port}
+	return &TCPFlow{"tcp", src.IP, src.Port, dst.IP, dst.Port}
 }
 
 func (f *TCPFlow) String() string {
