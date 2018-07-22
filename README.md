@@ -283,7 +283,7 @@ The following shows the data example with some comments.
 
 ```
 {
-  // Time when the session is accepted (i.e. the time when SYN packet was received).
+  // Time when the session is accepted (i.e. time when the 3-way handshake is finished).
   "timestamp": "2018-04-18T11:06:09.419437117+09:00",
 
   // TCP flow (source IP address, source port, local address, local port)
