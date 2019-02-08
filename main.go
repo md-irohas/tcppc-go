@@ -195,8 +195,7 @@ func main() {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Printf("Failed to accept a new connection: %s\n", err)
-			continue
+			log.Fatalf("Failed to accept a new connection: %s\n", err)
 		}
 
 		conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second))
