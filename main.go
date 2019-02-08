@@ -127,6 +127,7 @@ func main() {
 	}
 
 	log.Printf("Timezone: %s\n", timezone)
+	log.Printf("Timeout: %d\n", timeout)
 
 	// Init signal handling.
 	sigc := make(chan os.Signal, 1)
