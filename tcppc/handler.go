@@ -1,6 +1,7 @@
 package tcppc
 
 import (
+	// "bufio"
 	"encoding/json"
 	"errors"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"runtime"
 	"sync"
 	"syscall"
+	"time"
 	"github.com/md-irohas/tcppc-go/crypto/tls"
 )
 
@@ -69,6 +71,15 @@ func getOriginalDst(conn net.Conn) (*net.TCPAddr, error) {
 		return nil, errors.New("Unknown Conn instance.")
 	}
 
+	defer file.Close()
+
+	// Set the file to non-blocking mode not to disable SetDeadline method.
+	fd := int(file.Fd())
+	err = syscall.SetNonblock(fd, true)
+	if err != nil {
+		return nil, err
+	}
+
 	origDstRaw, err := syscall.GetsockoptIPv6Mreq(int(file.Fd()), syscall.IPPROTO_IP, SO_ORIGINAL_DST)
 	if err != nil {
 		return nil, err
@@ -84,7 +95,7 @@ func getOriginalDst(conn net.Conn) (*net.TCPAddr, error) {
 	return origDst, nil
 }
 
-func HandleRequest(conn net.Conn, writer *RotWriter) {
+func HandleRequest(conn net.Conn, writer *RotWriter, timeout int) {
 	counter.inc()
 	defer counter.dec()
 	defer conn.Close()
@@ -115,8 +126,11 @@ func HandleRequest(conn net.Conn, writer *RotWriter) {
 	buf := make([]byte, 2048)
 
 	for {
+		conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second))
+
 		length, err := conn.Read(buf)
 		if err != nil {
+			log.Println(err)
 			break
 		}
 

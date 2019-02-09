@@ -199,7 +199,6 @@ func main() {
 			log.Fatalf("Failed to accept a new connection: %s\n", err)
 		}
 
-		conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second))
-		go tcppc.HandleRequest(conn, writer)
+		go tcppc.HandleRequest(conn, writer, timeout)
 	}
 }
