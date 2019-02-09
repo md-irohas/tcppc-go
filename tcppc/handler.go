@@ -130,7 +130,6 @@ func HandleRequest(conn net.Conn, writer *RotWriter, timeout int) {
 
 		length, err := conn.Read(buf)
 		if err != nil {
-			log.Println(err)
 			break
 		}
 
