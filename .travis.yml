@@ -1,4 +1,6 @@
 language: go
+go:
+  - 1.10.4
 install:
   - go get -v -d
   - go build -v
