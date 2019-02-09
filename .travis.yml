@@ -1,15 +1,13 @@
 language: go
-go:
-- '1.10'
 install:
-- go get -v -d
-- go build -v
+  - go get -v -d
+  - go build -v
 deploy:
   provider: releases
   api_key:
-    secure: LB25IpyU9v7CqWjy1O1ItNB960l8BzYdziPWFa3V49KrU01DZD+mBjBk/EnW49CK306MRf+elTkDC9PRA4oUsfghH87eCQ6vEpi9O24SIozNb41svkrqmP7eWWVDH3vOCH/nL64L5weo79U43phUGhQrXWiuTN1f70wrqmvU3GYfQ92+r5nobs/eT68LmYpbISaZX3r3Qc9wUCRmuC0XJ/NC740+t/FKRZDnWAqmgez0NwFDVELFsvte/f0U6cylsoZNE6PoiGVXKLkEGzVAmVCD/4T+61A9TosSPwvESAO3y6oa6jTX1pZiFQjYq4zI6kVKNwAeqrvW6wnjG7tFFAlfZ1nJeI1J0LNsVpDUeFA2MkINvAVI/Ko2VwlZ1do3AnaadAKrYdZyvQSouDoXxyk7SzjbLWF1uSGGGUlGjave7PzdPlscVGWeOfB9C+ICgBHqzefhgqpqY5Pu7yEtoo4rnVOBrnAEV4XCRgD85ncgr5IsP9UaM+Vn8ffvPIjNHuXiL1EoV7ErnZfrfoIpLn2YLtj5resg7uVjz02kq10eBsB0gBGFdyV4vimqsH3QpKyH9DahJLbT2/ibGku966WB+A4cCRyZCyfQ/tNBjr02RwRE+6rbDcB6G+YXUQpocgCXeQizGURu8E9mkTaKmum+rcElJhtbWkjO5rTXrTY=
-  file: 'tcppc-go'
+    secure: awGDh6SRsZkJheMfKESAwCuCZInaOY9Gm0ynsOVFAeDHno4gL/361jQ7OdT92t7yF2253N1XFv7zJp6HEvOFaHGXlfmAzpvaFcLWBhKyTynozsSoIk33k1Ib3JYEbOr4ue6JBa8VTl+JrWITFmEhdzqdOin6fdfxek+zo7fcmLQxKmItMxF+8f9bbfFvcZzThUANydG3228lwE07g48R+Admm5edQJluABufgWj1axg//ctYjpPsrppErbFil7UPZkBVqQzKbLInfvDtfKbS/AGbtUgsx2iMSvIks6Cpos7GPAuHn1bFuL/wAdkIClRidEsFhldO/+uwe4OuV4MuMJvnRnQmQmW+Ui0zV2o1uVIN5SbB6TD3Mg3+jEoZprK1KWpS3TeQ8cgWrZWbvfqrebkwA1+VLLn0L7bnQzRUNEC6uy6zhobzA5XgqeUmcy0YhCdBDeh7IYsKFxQjffAFqMriKIWNzA3pooWw+gQtfg8wP1AaXMl8fSRe500GulQk/iMZS80Ggm+aWfnybLTAI5VZIkMwreTQamN49uMj+S+K+L9La0Nl/fnz/u4U17rs23NJnDJac5wOXYdJBwXf19D+Lrv2wkBqwURwyf6PpZcK7IpwjTJu/gl7l+RhhmIWFb5r15BNmvTTrII/HaVG+BizRc45iBHSakweaPhYw0s=
+  file: tcppc-go
   skip_cleanup: true
   on:
-    repo: md-irohas/tcppc-go
     tags: true
+    repo: md-irohas/tcppc-go
