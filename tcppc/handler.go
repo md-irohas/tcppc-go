@@ -80,7 +80,7 @@ func getOriginalDst(conn net.Conn) (*net.TCPAddr, error) {
 		return nil, err
 	}
 
-	origDstRaw, err := syscall.GetsockoptIPv6Mreq(int(file.Fd()), syscall.IPPROTO_IP, SO_ORIGINAL_DST)
+	origDstRaw, err := syscall.GetsockoptIPv6Mreq(fd, syscall.IPPROTO_IP, SO_ORIGINAL_DST)
 	if err != nil {
 		return nil, err
 	}
