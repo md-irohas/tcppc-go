@@ -55,7 +55,7 @@ func main() {
 	flag.Parse()
 
 	if showVersion {
-		fmt.Println("version:", version)
+		fmt.Println(version)
 		return
 	}
 
