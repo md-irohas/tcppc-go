@@ -40,7 +40,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^v\d+\.\d+\.\d+$/
+              only: /^\d+\.\d+\.\d+$/
 
       - deploy-to-github-release:
           requires:
@@ -49,4 +49,4 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^v\d+\.\d+\.\d+$/
+              only: /^\d+\.\d+\.\d+$/
