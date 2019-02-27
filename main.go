@@ -144,9 +144,9 @@ func main() {
 	}()
 
 	// Prepare for TCP/TLL handshake listener.  When both TLS certificate file
-	// and TLS key file are given, start listening as TLS handshaker. When none
-	// of them are given, start listening as TCP handshaker. Otherwise, failed
-	// to start listening.
+	// and TLS key file are given, this program starts listening as TLS
+	// handshaker. When none of them are given, this program starts listening
+	// as TCP handshaker. Otherwise, this program fails to start listening.
 
 	if x509Cert != "" && x509Key != "" {
 		log.Printf("Server Mode: TLS handshaker.\n")
