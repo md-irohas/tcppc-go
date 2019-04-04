@@ -78,6 +78,9 @@ func (w *RotWriter) findFileName(ts int64) string {
 }
 
 func (w *RotWriter) update() {
+	w.mutex.Lock()
+	defer w.mutex.Unlock()
+
 	curTime := time.Now().Unix()
 
 	if curTime > w.lstRotTime && w.RotInt > 0 && (curTime%w.RotInt) == w.RotOffset {
@@ -112,16 +115,11 @@ func (w *RotWriter) update() {
 		}
 
 		w.numSessions = 0
-
-		w.mutex.Lock()
 		w.file = file
-		w.mutex.Unlock()
 	}
 }
 
 func (w *RotWriter) Write(data []byte) (n int, err error) {
-	w.update()
-
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 
@@ -130,6 +128,9 @@ func (w *RotWriter) Write(data []byte) (n int, err error) {
 }
 
 func (w *RotWriter) Close() error {
+	w.mutex.Lock()
+	defer w.mutex.Unlock()
+
 	w.closed = true
 	return w.file.Close()
 }
