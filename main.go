@@ -51,6 +51,7 @@ func main() {
 	flag.StringVar(&x509Cert, "C", "", "TLS certificate file.")
 	flag.StringVar(&x509Key, "K", "", "TLS key file.")
 	flag.StringVar(&cnfFileName, "c", "", "configuration file.")
+	flag.BoolVar(&tcppc.OriginalDst, "disable-original-dst", true, "disable ORIGINAL_DST function.")
 	flag.BoolVar(&showVersion, "v", false, "show version and exit.")
 	flag.Parse()
 
@@ -128,6 +129,7 @@ func main() {
 
 	log.Printf("Timezone: %s\n", timezone)
 	log.Printf("Timeout: %d\n", timeout)
+	log.Printf("Original Destination Feature: %v\n", tcppc.OriginalDst)
 
 	// Init signal handling.
 	sigc := make(chan os.Signal, 1)

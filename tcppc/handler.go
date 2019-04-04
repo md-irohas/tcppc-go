@@ -20,6 +20,7 @@ const (
 
 var (
 	counter = NewSessionCounter()
+	OriginalDst = true
 )
 
 type SessionCounter struct {
