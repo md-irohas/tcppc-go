@@ -11,10 +11,6 @@ const (
 	TIME_FMT = "%Y-%m-%dT%H:%M:%S"
 )
 
-var (
-	counter = NewSessionCounter()
-)
-
 func formatTimeStr(t *time.Time) string {
 	return strftime.Format(TIME_FMT, *t)
 }
@@ -36,7 +32,7 @@ func NewUDPFlow(src, dst *net.UDPAddr) *Flow {
 }
 
 func (f *Flow) String() string {
-	return fmt.Sprintf("Flow: [%s] %s:%d <-> %s:%d", f.Proto, f.Src.String(), f.Sport, f.Dst.String(), f.Dport)
+	return fmt.Sprintf("Flow: %s %s:%d <-> %s:%d", f.Proto, f.Src.String(), f.Sport, f.Dst.String(), f.Dport)
 }
 
 type Payload struct {

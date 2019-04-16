@@ -40,13 +40,13 @@ func HandleTCPSession(conn *net.TCPConn, writer *RotWriter, timeout int) {
 
 		session.AddPayload(data)
 
-		log.Printf("Received: %s: %q (%d bytes)\n", session, buf[:length], length)
+		log.Printf("TCP: Received: %s: %q (%d bytes)\n", session, buf[:length], length)
 	}
 
 	if writer != nil {
 		outputJson, err := json.Marshal(session)
 		if err == nil {
-			log.Printf("Wrote data: %s", session)
+			log.Printf("Wrote data: %s\n", session)
 			writer.Write(outputJson)
 		} else {
 			log.Printf("Failed to encode data as json: %s\n", err)
@@ -77,7 +77,7 @@ func StartTCPServer(host string, port int, writer *RotWriter, timeout int) {
 
 	file, err := ln.File()
 	if err != nil {
-		log.Fatalf("Failed to get a file descriptor of the listener: %s", err)
+		log.Fatalf("Failed to get a file descriptor of the listener: %s\n", err)
 	}
 	defer file.Close()
 

@@ -4,6 +4,10 @@ import (
 	"sync"
 )
 
+var (
+	counter = NewSessionCounter()
+)
+
 type SessionCounter struct {
 	Count uint
 	mutex sync.RWMutex

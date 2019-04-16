@@ -129,17 +129,19 @@ func main() {
 		log.Println("Either TLS cerfiticate or key file is given.")
 		log.Println("TCP handshaker: neither TLS certificate nor TLS key files are required.")
 		log.Println("TLS handshaker: both TLS certificate and TLS key files are required.")
-		log.Fatalln("Exit.")
+		log.Fatalln("Abort.")
 	}
 
 	var writer *tcppc.RotWriter
 	if *fileNameFmt != "" {
 		log.Printf("Session data file: %s (Rotate every %d seconds w/ %d seconds offset)\n", *fileNameFmt, *rotInt, *rotOffset)
+
 		writer = tcppc.NewWriter(*fileNameFmt, *rotInt, *rotOffset, loc)
 		defer writer.Close()
 	} else {
 		log.Printf("Session data file: none.\n")
 		log.Printf("!!!CAUTION!!! Session data will not be written to files.\n")
+
 		writer = nil
 	}
 
@@ -165,7 +167,7 @@ func main() {
 	}
 
 	// Wait for TCP/TLS server to start, then start UDP server.
-	time.Sleep(1 * time.Second)
+	time.Sleep(100 * time.Millisecond)
 	go tcppc.StartUDPServer(*host, *port, writer)
 
 	// Wait for SIGNAL.
@@ -174,6 +176,6 @@ func main() {
 
 	select {
 	case <-sigc:
-		log.Printf("SIGNAL:")
+		log.Printf("Exit.")
 	}
 }

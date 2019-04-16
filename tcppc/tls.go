@@ -11,6 +11,8 @@ import (
 
 func HandleTLSSession(conn *tls.Conn, writer *RotWriter, timeout int) {
 	defer conn.Close()
+	defer counter.dec()
+	counter.inc()
 
 	var src, dst *net.TCPAddr
 	src = conn.RemoteAddr().(*net.TCPAddr)
@@ -45,7 +47,7 @@ func HandleTLSSession(conn *tls.Conn, writer *RotWriter, timeout int) {
 	if writer != nil {
 		outputJson, err := json.Marshal(session)
 		if err == nil {
-			log.Printf("Wrote data: %s", session)
+			log.Printf("Wrote data: %s\n", session)
 			writer.Write(outputJson)
 		} else {
 			log.Printf("Failed to encode data as json: %s\n", err)
@@ -76,7 +78,7 @@ func StartTLSServer(host string, port int, config *tls.Config, writer *RotWriter
 
 	file, err := tcpLn.File()
 	if err != nil {
-		log.Fatalf("Failed to get a file descriptor of the listener: %s", err)
+		log.Fatalf("Failed to get a file descriptor of the listener: %s\n", err)
 	}
 	defer file.Close()
 

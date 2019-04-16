@@ -22,7 +22,7 @@ func getOrigDst(oob []byte, oobn int) (*net.UDPAddr, error) {
 	for _, msg := range msgs {
 		if msg.Header.Level == syscall.SOL_IP && msg.Header.Type == syscall.IP_RECVORIGDSTADDR {
 			origDstRaw := &syscall.RawSockaddrInet4{}
-			if err = binary.Read(bytes.NewReader(msg.Data), binary.LittleEndian, origDstRaw); err != nil {
+			if err := binary.Read(bytes.NewReader(msg.Data), binary.LittleEndian, origDstRaw); err != nil {
 				return nil, err
 			}
 
@@ -30,12 +30,14 @@ func getOrigDst(oob []byte, oobn int) (*net.UDPAddr, error) {
 			case syscall.AF_INET:
 				pp := (*syscall.RawSockaddrInet4)(unsafe.Pointer(origDstRaw))
 				p := (*[2]byte)(unsafe.Pointer(&pp.Port))
+
 				origDst = &net.UDPAddr{
 					IP:   net.IPv4(pp.Addr[0], pp.Addr[1], pp.Addr[2], pp.Addr[3]),
 					Port: int(p[0])<<8 + int(p[1]),
 				}
+
 			default:
-				return nil, errors.New("original destination is an unsupported network family")
+				return nil, errors.New("Unsupported network family.")
 			}
 		}
 	}

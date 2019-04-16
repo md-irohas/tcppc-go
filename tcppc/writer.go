@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -20,7 +19,7 @@ type RotWriter struct {
 	FileNameFmt string
 	// Rotation interval in second.
 	RotInt int64
-	// Off-set of rotation interval.
+	// Rotation interval offset in second.
 	RotOffset int64
 	// Location used as timezone in FileNameFmt.
 	Location *time.Location
@@ -28,12 +27,12 @@ type RotWriter struct {
 	file *os.File
 	// Last rotation time.
 	lstRotTime int64
-	// True if this writer is closed. This flag is used to make a goroutine
-	// exit to update this writer.
+	// True if this writer is closed.
+	// This flag is used to make the update goroutine exit.
 	closed bool
 	// Number of session data written to file.
 	numSessions int
-	// Mutex object for writing data to file.
+	// Mutex object for exclusive control of writing data to file.
 	mutex sync.RWMutex
 }
 
@@ -70,18 +69,6 @@ func (w *RotWriter) findFileName(ts int64) string {
 	fileNameFmt := w.FileNameFmt
 	fileName := strftime.Format(fileNameFmt, tmpTime)
 
-	// If the filename already exists, find an alternative filename.
-	// e.g. foobar.pcap -> foobar-1.pcap
-	for i := 1; fileExists(fileName); i++ {
-		log.Printf("File already exists: %s\n", fileName)
-
-		fileNameFmtExt := filepath.Ext(fileNameFmt)
-		fileNameFmtBase := fileNameFmt[0 : len(fileNameFmt)-len(fileNameFmtExt)]
-
-		newFileNameFmt := fileNameFmtBase + "-" + strconv.Itoa(i) + fileNameFmtExt
-		fileName = strftime.Format(newFileNameFmt, tmpTime)
-	}
-
 	return fileName
 }
 
@@ -101,11 +88,10 @@ func (w *RotWriter) update() {
 	}
 
 	if w.file == nil {
-		w.lstRotTime = curTime
-
 		fileName := w.findFileName(curTime)
 		dirName := filepath.Dir(fileName)
 
+		// Create directories if not exists.
 		if !fileExists(dirName) {
 			err := os.MkdirAll(dirName, 0755)
 			if err == nil {
@@ -122,6 +108,7 @@ func (w *RotWriter) update() {
 			log.Fatalf("Failed to create a session file: %s (%s)\n", fileName, err)
 		}
 
+		w.lstRotTime = curTime
 		w.numSessions = 0
 		w.file = file
 	}
@@ -132,6 +119,8 @@ func (w *RotWriter) Write(data []byte) (n int, err error) {
 	defer w.mutex.Unlock()
 
 	w.numSessions += 1
+
+	// Write data to file with '\n'.
 	return w.file.Write(append(data, 0x0a))
 }
 
@@ -140,5 +129,6 @@ func (w *RotWriter) Close() error {
 	defer w.mutex.Unlock()
 
 	w.closed = true
+
 	return w.file.Close()
 }
