@@ -1,14 +1,14 @@
 package tcppc
 
 import (
+	"bytes"
+	"encoding/binary"
+	"encoding/json"
+	"errors"
 	"log"
 	"net"
 	"syscall"
 	"unsafe"
-	"encoding/binary"
-	"encoding/json"
-	"bytes"
-	"errors"
 )
 
 func getOrigDst(oob []byte, oobn int) (*net.UDPAddr, error) {
@@ -70,7 +70,7 @@ func StartUDPServer(host string, port int, writer *RotWriter) {
 	log.Printf("Listen: %s:%d\n", host, port)
 
 	addr := &net.UDPAddr{
-		IP: net.ParseIP(host),
+		IP:   net.ParseIP(host),
 		Port: int(port),
 	}
 

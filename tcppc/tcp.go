@@ -1,11 +1,11 @@
 package tcppc
 
 import (
+	"encoding/json"
 	"log"
 	"net"
-	"time"
-	"encoding/json"
 	"syscall"
+	"time"
 )
 
 func HandleTCPSession(conn *net.TCPConn, writer *RotWriter, timeout int) {
@@ -64,8 +64,8 @@ func StartTCPServer(host string, port int, writer *RotWriter, timeout int) {
 	log.Printf("Server Mode: TCP\n")
 	log.Printf("Listen: %s:%d\n", host, port)
 
-	addr := &net.TCPAddr {
-		IP: net.ParseIP(host),
+	addr := &net.TCPAddr{
+		IP:   net.ParseIP(host),
 		Port: port,
 	}
 

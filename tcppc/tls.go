@@ -1,12 +1,12 @@
 package tcppc
 
 import (
+	"crypto/tls"
+	"encoding/json"
 	"log"
 	"net"
-	"time"
-	"encoding/json"
 	"syscall"
-	"crypto/tls"
+	"time"
 )
 
 func HandleTLSSession(conn *tls.Conn, writer *RotWriter, timeout int) {
@@ -63,8 +63,8 @@ func StartTLSServer(host string, port int, config *tls.Config, writer *RotWriter
 	log.Printf("Server Mode: TLS\n")
 	log.Printf("Listen: %s:%d\n", host, port)
 
-	addr := &net.TCPAddr {
-		IP: net.ParseIP(host),
+	addr := &net.TCPAddr{
+		IP:   net.ParseIP(host),
 		Port: port,
 	}
 

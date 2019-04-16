@@ -15,7 +15,6 @@ var (
 	counter = NewSessionCounter()
 )
 
-
 func formatTimeStr(t *time.Time) string {
 	return strftime.Format(TIME_FMT, *t)
 }
@@ -55,7 +54,7 @@ func (p *Payload) String() string {
 }
 
 type Session struct {
-	Timestamp time.Time     `json:"timestamp"`
+	Timestamp time.Time  `json:"timestamp"`
 	Flow      *Flow      `json:"flow"`
 	Payloads  []*Payload `json:"payloads"`
 }

@@ -1,10 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"github.com/md-irohas/tcppc-go/tcppc"
-	"crypto/tls"
 	"github.com/pelletier/go-toml"
 	"log"
 	"os"
@@ -19,17 +19,17 @@ const (
 )
 
 var (
-	host = flag.String("H", "0.0.0.0", "hostname to listen on.")
-	port = flag.Int("p", 12345, "port number to listen on.")
-	timeout = flag.Int("t", 60, "timeout for TCP/TLS connection.")
+	host        = flag.String("H", "0.0.0.0", "hostname to listen on.")
+	port        = flag.Int("p", 12345, "port number to listen on.")
+	timeout     = flag.Int("t", 60, "timeout for TCP/TLS connection.")
 	fileNameFmt = flag.String("w", "", "session file (JSON lines format).")
-	rotInt = flag.Int("T", 0, "rotation interval [sec].")
-	rotOffset = flag.Int("offset", 0, "rotation interval offset [sec].")
+	rotInt      = flag.Int("T", 0, "rotation interval [sec].")
+	rotOffset   = flag.Int("offset", 0, "rotation interval offset [sec].")
 	logFileName = flag.String("L", "", "[deprecated] log file.")
-	timezone = flag.String("z", "Local", "timezone used for session file.")
-	maxFdNum = flag.Uint64("R", 0, "maximum number of file descriptors (need root priviledge).")
-	x509Cert = flag.String("C", "", "TLS certificate file.")
-	x509Key = flag.String("K", "", "TLS key file.")
+	timezone    = flag.String("z", "Local", "timezone used for session file.")
+	maxFdNum    = flag.Uint64("R", 0, "maximum number of file descriptors (need root priviledge).")
+	x509Cert    = flag.String("C", "", "TLS certificate file.")
+	x509Key     = flag.String("K", "", "TLS key file.")
 	cnfFileName = flag.String("c", "", "configuration file.")
 	showVersion = flag.Bool("v", false, "show version and exit.")
 )
@@ -173,7 +173,7 @@ func main() {
 	signal.Notify(sigc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
 
 	select {
-	case <- sigc:
+	case <-sigc:
 		log.Printf("SIGNAL:")
 	}
 }
