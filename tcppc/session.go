@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	TIME_FMT = "%Y-%m-%dT%H:%M:%S"
+	TIME_FMT = "%Y-%m-%dT%H:%M:%S%z"
 )
 
 func formatTimeStr(t *time.Time) string {
