@@ -15,7 +15,7 @@ func HandleTCPSession(conn *net.TCPConn, writer *RotWriter, timeout int) {
 
 	var src, dst *net.TCPAddr
 	src = conn.RemoteAddr().(*net.TCPAddr)
-	dst = conn.RemoteAddr().(*net.TCPAddr)
+	dst = conn.LocalAddr().(*net.TCPAddr)
 
 	flow := NewTCPFlow(src, dst)
 	session := NewSession(flow)
