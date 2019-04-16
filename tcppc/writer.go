@@ -37,8 +37,16 @@ type RotWriter struct {
 	mutex sync.RWMutex
 }
 
-func NewWriter(fileNameFmt string, rotInt, rotOffset int64, loc *time.Location) *RotWriter {
-	w := &RotWriter{FileNameFmt: fileNameFmt, RotInt: rotInt, RotOffset: rotOffset, Location: loc, file: nil, lstRotTime: 0, closed: false}
+func NewWriter(fileNameFmt string, rotInt, rotOffset int, loc *time.Location) *RotWriter {
+	w := &RotWriter{
+		FileNameFmt: fileNameFmt,
+		RotInt: int64(rotInt),
+		RotOffset: int64(rotOffset),
+		Location: loc,
+		file: nil,
+		lstRotTime: 0,
+		closed: false,
+		}
 
 	go func() {
 		for {

@@ -11,11 +11,16 @@ const (
 	TIME_FMT = "%Y-%m-%dT%H:%M:%S"
 )
 
+var (
+	counter = NewSessionCounter()
+)
+
+
 func formatTimeStr(t *time.Time) string {
 	return strftime.Format(TIME_FMT, *t)
 }
 
-type TCPFlow struct {
+type Flow struct {
 	Proto string `json:"proto"`
 	Src   net.IP `json:"src"`
 	Sport int    `json:"sport"`
@@ -23,47 +28,51 @@ type TCPFlow struct {
 	Dport int    `json:"dport"`
 }
 
-func NewTCPFlow(src, dst *net.TCPAddr) *TCPFlow {
-	return &TCPFlow{"tcp", src.IP, src.Port, dst.IP, dst.Port}
+func NewTCPFlow(src, dst *net.TCPAddr) *Flow {
+	return &Flow{"tcp", src.IP, src.Port, dst.IP, dst.Port}
 }
 
-func (f *TCPFlow) String() string {
-	return fmt.Sprintf("TCPFlow: %s:%d <-> %s:%d", f.Src.String(), f.Sport, f.Dst.String(), f.Dport)
+func NewUDPFlow(src, dst *net.UDPAddr) *Flow {
+	return &Flow{"udp", src.IP, src.Port, dst.IP, dst.Port}
 }
 
-type TCPPayload struct {
+func (f *Flow) String() string {
+	return fmt.Sprintf("Flow: [%s] %s:%d <-> %s:%d", f.Proto, f.Src.String(), f.Sport, f.Dst.String(), f.Dport)
+}
+
+type Payload struct {
 	Index     uint      `json:"index"`
 	Timestamp time.Time `json:"timestamp"`
 	Data      []byte    `json:"data"`
 }
 
-func NewTCPPayload(index uint, timestamp time.Time, data []byte) *TCPPayload {
-	return &TCPPayload{index, timestamp, data}
+func NewPayload(index uint, timestamp time.Time, data []byte) *Payload {
+	return &Payload{index, timestamp, data}
 }
 
-func (p *TCPPayload) String() string {
-	return fmt.Sprintf("TCPPayload %d: %s: %v", p.Index, formatTimeStr(&p.Timestamp), p.Data)
+func (p *Payload) String() string {
+	return fmt.Sprintf("Payload %d: %s: %v", p.Index, formatTimeStr(&p.Timestamp), p.Data)
 }
 
-type TCPSession struct {
+type Session struct {
 	Timestamp time.Time     `json:"timestamp"`
-	Flow      *TCPFlow      `json:"flow"`
-	Payloads  []*TCPPayload `json:"payloads"`
+	Flow      *Flow      `json:"flow"`
+	Payloads  []*Payload `json:"payloads"`
 }
 
-func NewTCPSession(flow *TCPFlow) *TCPSession {
-	return &TCPSession{Timestamp: time.Now(), Flow: flow}
+func NewSession(flow *Flow) *Session {
+	return &Session{Timestamp: time.Now(), Flow: flow}
 }
 
-func (s *TCPSession) String() string {
-	return fmt.Sprintf("TCPSession: %s: %s (%d payloads)", formatTimeStr(&s.Timestamp), s.Flow, len(s.Payloads))
+func (s *Session) String() string {
+	return fmt.Sprintf("Session: %s: %s (%d payloads)", formatTimeStr(&s.Timestamp), s.Flow, len(s.Payloads))
 }
 
-func (s *TCPSession) AddPayload(data []byte) *TCPPayload {
+func (s *Session) AddPayload(data []byte) *Payload {
 	index := uint(len(s.Payloads))
 	ts := time.Now()
 
-	payload := NewTCPPayload(index, ts, data)
+	payload := NewPayload(index, ts, data)
 	s.Payloads = append(s.Payloads, payload)
 
 	return payload
