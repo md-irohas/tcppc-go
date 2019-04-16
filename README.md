@@ -74,14 +74,18 @@ Usage of ./tcppc-go:
 Run tcppc-go program.
 
 ```sh
-$ ./tcppc-go
-2018/04/18 09:08:51 Start TCPPC program.
-2018/04/18 09:08:51 Maximum number of file descriptors: 256
-2018/04/18 09:08:51 Timezone: Local
-2018/04/18 09:08:51 Server Mode: TCP handshaker.
-2018/04/18 09:08:51 Listen: 0.0.0.0:12345
-2018/04/18 09:08:51 TCP session data: none.
-2018/04/18 09:08:51 !!!CAUTION!!! TCP session data will not be written to files.
+$ sudo ./tcppc-go
+2019/04/16 23:42:32 Maximum number of file descriptors: 1024
+2019/04/16 23:42:32 Timezone: Local
+2019/04/16 23:42:32 Timeout: 60
+2019/04/16 23:42:32 Session data file: none.
+2019/04/16 23:42:32 !!!CAUTION!!! Session data will not be written to files.
+2019/04/16 23:42:32 Server Mode: TCP
+2019/04/16 23:42:32 Listen: 0.0.0.0:12345
+2019/04/16 23:42:32 Start TCP server.
+2019/04/16 23:42:32 Server Mode: UDP
+2019/04/16 23:42:32 Listen: 0.0.0.0:12345
+2019/04/16 23:42:32 Start UDP server.
 ```
 
 Connect to the server from another terminal.
@@ -90,14 +94,27 @@ Connect to the server from another terminal.
 $ echo "Hello, TCPPC" | nc 127.0.0.1 12345
 ```
 
-The tcppc-go will get the following logs.
+The tcppc-go gets the following logs.
 
 ```sh
 $ ./tcppc-go
 ...
-2018/04/18 09:10:13 Established: TCPSession: 2018-04-18T09:10:13: TCPFlow: 127.0.0.1:53073 <-> 127.0.0.1:12345 (0 payloads) (#Sessions: 1)
-2018/04/18 09:10:13 Received: TCPSession: 2018-04-18T09:10:13: TCPFlow: 127.0.0.1:53073 <-> 127.0.0.1:12345 (1 payloads): "Hello, TCPPC\n" (13 bytes)
-2018/04/18 09:10:13 Closed: TCPSession: 2018-04-18T09:10:13: TCPFlow: 127.0.0.1:53073 <-> 127.0.0.1:12345 (1 payloads) (#Sessions: 1)
+2019/04/16 23:44:00 TCP: Established: Session: 2019-04-16T23:44:00: Flow: tcp 127.0.0.1:60998 <-> 127.0.0.1:12345 (0 payloads) (#Sessions: 1)
+2019/04/16 23:44:00 TCP: Received: Session: 2019-04-16T23:44:00: Flow: tcp 127.0.0.1:60998 <-> 127.0.0.1:12345 (1 payloads): "Hello, TCPPC\n" (13 bytes)
+2019/04/16 23:44:00 Closed: Session: 2019-04-16T23:44:00: Flow: tcp 127.0.0.1:60998 <-> 127.0.0.1:12345 (1 payloads) (#Sessions: 1)
+```
+
+Send UDP packets from the terminal.
+
+```sh
+$ echo "Hello, TCPPC" | nc -u 127.0.0.1 12345
+```
+
+The tcppc-go gets the following logs.
+
+```sh
+...
+2019/04/16 23:45:20 UDP: Received: Session: 2019-04-16T23:45:20: Flow: udp 127.0.0.1:49616 <-> 127.0.0.1:12345 (1 payloads): "Hello, TCPPC\n" (13 bytes)
 ```
 
 Type Ctrl+C to stop this program.
@@ -134,6 +151,7 @@ $ jq . log/tcppc-20180418.jsonl
 {
   "timestamp": "2018-04-18T09:51:34.689896842+09:00",
   "flow": {
+    "proto": "tcp",
     "src": "127.0.0.1",
     "sport": 53484,
     "dst": "127.0.0.1",
@@ -176,6 +194,7 @@ $ jq . log/tcppc-20180418.jsonl
 {
   "timestamp": "2018-04-18T10:06:08.104667676+09:00",
   "flow": {
+    "proto": "tcp",
     "src": "127.0.0.1",
     "sport": 53635,
     "dst": "127.0.0.1",
@@ -256,21 +275,16 @@ systemctl enable tcppc
 
 ### Listen on all ports
 
-The easiest way to listen on all ports is to redirect all packets to the
-listening port by a packet forwarding tool such as `iptables`.
+The easiest way to listen on all ports is to use TPROXY function of `iptables`.
 
 In this case, you should prepare a new (pseudo) network interface and an IP
 address (i.e. IP alias) to monitor and capture all the traffic.
 
 ```
 # !!! DANGER !!!
-$ iptables -t nat -A PREROUTING -i <interface> -p tcp -d <listen-ip> -j DNAT --to-destination <listen-ip>:<listen-port>
+$ iptables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
+$ iptables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
 ```
-
-Although the destination address and port are converted by NAT, recent linux
-provides an `ORIGINAL_DST` function to lookup the original destination address
-and port. Therefore, `tcppc` can record original destination address and port
-in linux environment.
 
 
 ## Session data format
@@ -281,13 +295,14 @@ Each line represents each session data.
 
 The following shows the data example with some comments.
 
-```
+```sh
 {
   // Time when the session is accepted (i.e. time when the 3-way handshake is finished).
   "timestamp": "2018-04-18T11:06:09.419437117+09:00",
 
   // TCP flow (source IP address, source port, local address, local port)
   "flow": {
+    "proto": "tcp",
     "src": "127.0.0.1",
     "sport": 54167,
     "dst": "127.0.0.1",
@@ -314,14 +329,6 @@ The following shows the data example with some comments.
   ]
 }
 ```
-
-## Limitations
-
-### UDP support
-
-The current implementation does not support UDP for session data because the
-ORIGINAL_DST function does not seem to work in UDP. The easiest way to monitor
-UDP traffic is to parse UDP packets from PCAP files.
 
 
 ## Alternatives
