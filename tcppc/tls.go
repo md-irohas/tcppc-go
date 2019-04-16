@@ -6,7 +6,7 @@ import (
 	"time"
 	"encoding/json"
 	"syscall"
-	"github.com/md-irohas/tcppc-go/crypto/tls"
+	"crypto/tls"
 )
 
 func HandleTLSSession(conn *tls.Conn, writer *RotWriter, timeout int) {

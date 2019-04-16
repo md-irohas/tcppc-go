@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/md-irohas/tcppc-go/tcppc"
-	"github.com/md-irohas/tcppc-go/crypto/tls"
+	"crypto/tls"
 	"github.com/pelletier/go-toml"
 	"log"
 	"os"
