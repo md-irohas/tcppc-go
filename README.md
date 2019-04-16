@@ -39,33 +39,33 @@ The followings are the options of `tcppc`.
 You can also use configuration files instead of using these options (See
 'Configuration' section).
 
-```
+```sh
 Usage of ./tcppc-go:
   -C string
-    	TLS certificate file.
+        TLS certificate file.
   -H string
-    	hostname to listen on. (default "0.0.0.0")
+        hostname to listen on. (default "0.0.0.0")
   -K string
-    	TLS key file.
+        TLS key file.
   -L string
-    	[deprecated] log file.
+        [deprecated] log file.
   -R uint
-    	set maximum number of file descriptors (need root priviledge in some environments).
+        maximum number of file descriptors (need root priviledge).
   -T int
-    	rotation interval [sec]. (default 0)
+        rotation interval [sec].
   -c string
-    	configuration file.
+        configuration file.
   -offset int
-    	rotation interval offset [sec].
-  -p uint
-    	port number to listen on. (default 12345)
+        rotation interval offset [sec].
+  -p int
+        port number to listen on. (default 12345)
   -t int
-    	timeout for TCP connection. (default 60)
-  -v	show version and exit.
+        timeout for TCP/TLS connection. (default 60)
+  -v    show version and exit.
   -w string
-    	tcp session file (JSON lines format).
+        session file (JSON lines format).
   -z string
-    	timezone used for tcp session file. (default "Local")
+        timezone used for session file. (default "Local")
 ```
 
 
@@ -189,7 +189,7 @@ $ wget --no-check-certificate https://127.0.0.1:12345/index
 
 The results of session data are the following (formatted by `jq` command).
 
-```
+```sh
 $ jq . log/tcppc-20180418.jsonl
 {
   "timestamp": "2018-04-18T10:06:08.104667676+09:00",
@@ -228,7 +228,7 @@ Connection: Keep-Alive
 The template of configuration file in [TOML](https://github.com/toml-lang/toml) format is ready.
 See tcppc.toml.orig.
 
-```
+```sh
 $ cp tcppc.toml.orig /etc/tcppc.toml
 $ vim /etc/tcppc.toml
 
@@ -242,7 +242,7 @@ certificate file and TLS key file.
 
 You can create these files by the following commands.
 
-```
+```sh
 $ openssl genrsa 2048 > server.key
 $ openssl req -new -key server.key > server.csr
 $ openssl x509 -days 36500 -req -signkey server.key < server.csr > server.crt
@@ -280,10 +280,10 @@ The easiest way to listen on all ports is to use TPROXY function of `iptables`.
 In this case, you should prepare a new (pseudo) network interface and an IP
 address (i.e. IP alias) to monitor and capture all the traffic.
 
-```
+```sh
 # !!! DANGER !!!
-$ iptables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
-$ iptables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
+$ iptables -t mangle -A PREROUTING -i <interface> -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
+$ iptables -t mangle -A PREROUTING -i <interface> -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
 ```
 
 
@@ -295,12 +295,15 @@ Each line represents each session data.
 
 The following shows the data example with some comments.
 
-```sh
+```
 {
-  // Time when the session is accepted (i.e. time when the 3-way handshake is finished).
+  // Time when the session is accepted.
+  // i.e.
+  //   tcp/tls: time when the handshake is finished.
+  //   udp: time when the UDP packet is received.
   "timestamp": "2018-04-18T11:06:09.419437117+09:00",
 
-  // TCP flow (source IP address, source port, local address, local port)
+  // Flow (protocol, source IP address, source port, local address, local port)
   "flow": {
     "proto": "tcp",
     "src": "127.0.0.1",
