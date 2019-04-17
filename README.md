@@ -32,6 +32,9 @@ If you are ready for building Go, type the following commands.
 $ go get github.com/md-irohas/tcppc-go
 ```
 
+Note that the version of go compiler must be 1.11.0 or newer to enable timeout
+of connection.
+
 
 ## Usage
 
