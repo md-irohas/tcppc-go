@@ -59,14 +59,14 @@ func main() {
 		}
 
 		*host = cnf.Get("tcppc.host").(string)
-		*port = cnf.Get("tcppc.port").(int)
-		*timeout = cnf.Get("tcppc.timeout").(int)
+		*port = int(cnf.Get("tcppc.port").(int64))
+		*timeout = int(cnf.Get("tcppc.timeout").(int64))
 		*fileNameFmt = cnf.Get("tcppc.tcpFileFmt").(string)
-		*rotInt = cnf.Get("tcppc.rotInt").(int)
-		*rotOffset = cnf.Get("tcppc.rotOffset").(int)
+		*rotInt = int(cnf.Get("tcppc.rotInt").(int64))
+		*rotOffset = int(cnf.Get("tcppc.rotOffset").(int64))
 		*logFileName = cnf.Get("tcppc.logFile").(string)
 		*timezone = cnf.Get("tcppc.timezone").(string)
-		*maxFdNum = cnf.Get("tcppc.maxFdNum").(uint64)
+		*maxFdNum = uint64(cnf.Get("tcppc.maxFdNum").(int64))
 		*x509Cert = cnf.Get("tcppc.x509Cert").(string)
 		*x509Key = cnf.Get("tcppc.x509Key").(string)
 	}
@@ -149,25 +149,27 @@ func main() {
 		writer = nil
 	}
 
-	switch tcppcMode {
-	case "tcp":
-		go tcppc.StartTCPServer(*host, *port, writer, *timeout)
+	if !*disableTcpServer {
+		switch tcppcMode {
+		case "tcp":
+			go tcppc.StartTCPServer(*host, *port, writer, *timeout)
 
-	case "tls":
-		log.Printf("Certificate: %s, Key: %s\n", *x509Cert, *x509Key)
+		case "tls":
+			log.Printf("Certificate: %s, Key: %s\n", *x509Cert, *x509Key)
 
-		cer, err := tls.LoadX509KeyPair(*x509Cert, *x509Key)
-		if err != nil {
-			log.Fatalf("Failed to load X509 key pair: %s\n", err)
+			cer, err := tls.LoadX509KeyPair(*x509Cert, *x509Key)
+			if err != nil {
+				log.Fatalf("Failed to load X509 key pair: %s\n", err)
+			}
+
+			config := &tls.Config{
+				Certificates: []tls.Certificate{cer},
+			}
+
+			go tcppc.StartTLSServer(*host, *port, config, writer, *timeout)
+		default:
+			log.Fatalf("Unknown mode of tcppc: %s\n", tcppcMode)
 		}
-
-		config := &tls.Config{
-			Certificates: []tls.Certificate{cer},
-		}
-
-		go tcppc.StartTLSServer(*host, *port, config, writer, *timeout)
-	default:
-		log.Fatalf("Unknown mode of tcppc: %s\n", tcppcMode)
 	}
 
 	// Wait for TCP/TLS server to start, then start UDP server.
