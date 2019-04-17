@@ -19,19 +19,21 @@ const (
 )
 
 var (
-	host        = flag.String("H", "0.0.0.0", "hostname to listen on.")
-	port        = flag.Int("p", 12345, "port number to listen on.")
-	timeout     = flag.Int("t", 60, "timeout for TCP/TLS connection.")
-	fileNameFmt = flag.String("w", "", "session file (JSON lines format).")
-	rotInt      = flag.Int("T", 0, "rotation interval [sec].")
-	rotOffset   = flag.Int("offset", 0, "rotation interval offset [sec].")
-	logFileName = flag.String("L", "", "[deprecated] log file.")
-	timezone    = flag.String("z", "Local", "timezone used for session file.")
-	maxFdNum    = flag.Uint64("R", 0, "maximum number of file descriptors (need root priviledge).")
-	x509Cert    = flag.String("C", "", "TLS certificate file.")
-	x509Key     = flag.String("K", "", "TLS key file.")
-	cnfFileName = flag.String("c", "", "configuration file.")
-	showVersion = flag.Bool("v", false, "show version and exit.")
+	host             = flag.String("H", "0.0.0.0", "hostname to listen on.")
+	port             = flag.Int("p", 12345, "port number to listen on.")
+	timeout          = flag.Int("t", 60, "timeout for TCP/TLS connection.")
+	fileNameFmt      = flag.String("w", "", "session file (JSON lines format).")
+	rotInt           = flag.Int("T", 0, "rotation interval [sec].")
+	rotOffset        = flag.Int("offset", 0, "rotation interval offset [sec].")
+	logFileName      = flag.String("L", "", "[deprecated] log file.")
+	timezone         = flag.String("z", "Local", "timezone used for session file.")
+	maxFdNum         = flag.Uint64("R", 0, "maximum number of file descriptors (need root priviledge).")
+	x509Cert         = flag.String("C", "", "TLS certificate file.")
+	x509Key          = flag.String("K", "", "TLS key file.")
+	cnfFileName      = flag.String("c", "", "configuration file.")
+	disableTcpServer = flag.Bool("disable-tcp-server", false, "disable TCP/TLS server.")
+	disableUdpServer = flag.Bool("disable-udp-server", false, "disable UDP server.")
+	showVersion      = flag.Bool("v", false, "show version and exit.")
 )
 
 func main() {
@@ -121,15 +123,17 @@ func main() {
 	// program starts listening as TCP handshaker. Otherwise, this program
 	// fails to start listening.
 	var tcppcMode string
-	if *x509Cert != "" && *x509Key != "" {
-		tcppcMode = "tls"
-	} else if *x509Cert == "" && *x509Key == "" {
-		tcppcMode = "tcp"
-	} else {
-		log.Println("Either TLS cerfiticate or key file is given.")
-		log.Println("TCP handshaker: neither TLS certificate nor TLS key files are required.")
-		log.Println("TLS handshaker: both TLS certificate and TLS key files are required.")
-		log.Fatalln("Abort.")
+	if !*disableTcpServer {
+		if *x509Cert != "" && *x509Key != "" {
+			tcppcMode = "tls"
+		} else if *x509Cert == "" && *x509Key == "" {
+			tcppcMode = "tcp"
+		} else {
+			log.Println("Either TLS cerfiticate or key file is given.")
+			log.Println("TCP handshaker: neither TLS certificate nor TLS key files are required.")
+			log.Println("TLS handshaker: both TLS certificate and TLS key files are required.")
+			log.Fatalln("Abort.")
+		}
 	}
 
 	var writer *tcppc.RotWriter
@@ -167,8 +171,10 @@ func main() {
 	}
 
 	// Wait for TCP/TLS server to start, then start UDP server.
-	time.Sleep(100 * time.Millisecond)
-	go tcppc.StartUDPServer(*host, *port, writer)
+	if !*disableUdpServer {
+		time.Sleep(100 * time.Millisecond)
+		go tcppc.StartUDPServer(*host, *port, writer)
+	}
 
 	// Wait for SIGNAL.
 	sigc := make(chan os.Signal, 1)
