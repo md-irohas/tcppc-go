@@ -10,6 +10,7 @@ am developing this program to use as a honeypot for monitoring payloads.
 Main functions:
 
 * Establish TCP & TLS handshake and continue to receive packets.
+* Receive UDP packets.
 * Save received data (session data) as JSON lines format.
 * Rotate the data files in the given interval.
 
@@ -58,6 +59,10 @@ Usage of ./tcppc-go:
         rotation interval [sec].
   -c string
         configuration file.
+  -disable-tcp-server
+        disable TCP/TLS server.
+  -disable-udp-server
+        disable UDP server.
   -offset int
         rotation interval offset [sec].
   -p int
@@ -146,7 +151,7 @@ $ echo "Hello, TCPPC" | nc 127.0.0.1 12345
 The results of the data are the following.
 Note that data in payloads are encoded in base64.
 
-```
+```sh
 # jq is a command for formatting JSON.
 # I tested this on April 18th, 2018.
 
@@ -285,8 +290,8 @@ address (i.e. IP alias) to monitor and capture all the traffic.
 
 ```sh
 # !!! DANGER !!!
-$ iptables -t mangle -A PREROUTING -i <interface> -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
-$ iptables -t mangle -A PREROUTING -i <interface> -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 12345
+$ iptables -t mangle -A PREROUTING -i <interface> -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip <ip> --on-port 12345
+$ iptables -t mangle -A PREROUTING -i <interface> -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip <ip> --on-port 12345
 ```
 
 
