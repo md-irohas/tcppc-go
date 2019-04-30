@@ -1,16 +1,17 @@
 # tcppc
 
-`tcppc` is a simple honeypot program to capture TCP/TLS payloads.  This program
-listens on the given IP address and the given port, establishes connections
-from external hosts, and continues to receive packets until the connections are
-closed or timeouted. Using `tcppc`, you can get payloads of arbitrary ports. I
-am developing this program to use as a honeypot for monitoring payloads.
-
+`tcppc` is a simple honeypot program to capture TCP/TLS/UDP payloads. This
+program listens on the given IP address and the given port, establishes
+connections from external hosts, and continues to receive packets until the
+connections are closed or timeouted. `tcppc` supports transparent proxy
+(TPROXY) by iptables, so you can get payloads of arbitrary ports using `tcppc`.
+I am developing this program to use as a honeypot for monitoring payloads.
 
 Main functions:
 
-* Establish TCP & TLS handshake and continue to receive packets.
+* Establish TCP or TLS handshake and continue to receive packets.
 * Receive UDP packets.
+* Support transparent proxy (PROXY) to listen on all ports.
 * Save received data (session data) as JSON lines format.
 * Rotate the data files in the given interval.
 
