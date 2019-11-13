@@ -18,7 +18,7 @@ func HandleTLSSession(conn *tls.Conn, writer *RotWriter, timeout int) {
 	src = conn.RemoteAddr().(*net.TCPAddr)
 	dst = conn.LocalAddr().(*net.TCPAddr)
 
-	flow := NewTCPFlow(src, dst)
+	flow := NewTLSFlow(src, dst)
 	session := NewSession(flow)
 
 	log.Printf("TLS: Established: %s (#Sessions: %d)\n", session, counter.count())

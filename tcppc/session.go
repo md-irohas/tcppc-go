@@ -27,6 +27,10 @@ func NewTCPFlow(src, dst *net.TCPAddr) *Flow {
 	return &Flow{"tcp", src.IP, src.Port, dst.IP, dst.Port}
 }
 
+func NewTLSFlow(src, dst *net.TCPAddr) *Flow {
+	return &Flow{"tls", src.IP, src.Port, dst.IP, dst.Port}
+}
+
 func NewUDPFlow(src, dst *net.UDPAddr) *Flow {
 	return &Flow{"udp", src.IP, src.Port, dst.IP, dst.Port}
 }
