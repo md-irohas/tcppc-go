@@ -203,7 +203,7 @@ $ jq . log/tcppc-20180418.jsonl
 {
   "timestamp": "2018-04-18T10:06:08.104667676+09:00",
   "flow": {
-    "proto": "tcp",
+    "proto": "tls",
     "src": "127.0.0.1",
     "sport": 53635,
     "dst": "127.0.0.1",
@@ -312,7 +312,7 @@ The following shows the data example with some comments.
   //   udp: time when the UDP packet is received.
   "timestamp": "2018-04-18T11:06:09.419437117+09:00",
 
-  // Flow (protocol, source IP address, source port, local address, local port)
+  // Flow (protocol (i.e., tcp/tls/udp, source IP address, source port, local address, local port)
   "flow": {
     "proto": "tcp",
     "src": "127.0.0.1",
