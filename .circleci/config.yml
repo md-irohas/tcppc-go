@@ -42,9 +42,13 @@ workflows:
           filters:
             tags:
               only: /^\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
       - deploy-to-github-release:
           requires:
             - build
           filters:
             tags:
               only: /^\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
