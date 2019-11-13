@@ -291,8 +291,8 @@ address (i.e. IP alias) to monitor and capture all the traffic.
 
 ```sh
 # !!! DANGER !!!
-$ iptables -t mangle -A PREROUTING -i <interface> -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip <ip> --on-port 12345
-$ iptables -t mangle -A PREROUTING -i <interface> -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip <ip> --on-port 12345
+$ iptables -t mangle -A PREROUTING -i <interface> -p tcp -d <honey-ip> -j TPROXY --tproxy-mark 0x1/0x1 --on-ip <honey-ip> --on-port 12345
+$ iptables -t mangle -A PREROUTING -i <interface> -p udp -d <honey-ip> -j TPROXY --tproxy-mark 0x1/0x1 --on-ip <honey-ip> --on-port 12345
 ```
 
 
