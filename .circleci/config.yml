@@ -5,11 +5,10 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.15
     working_directory: /go/src/github.com/md-irohas/tcppc-go
     steps:
       - checkout
-      - run: go get -v -d
       - run: go build -v
       - store_artifacts:
           path: ./tcppc-go
@@ -20,7 +19,7 @@ jobs:
 
   deploy-to-github-release:
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.15
     steps:
       - attach_workspace:
           at: /tmp/build/
